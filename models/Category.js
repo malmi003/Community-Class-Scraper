@@ -11,10 +11,12 @@ let CategorySchema = new Schema({
         type: String,
         required: true
     },
-    class: {
-        type: Schema.Types.ObjectId,
-        ref: "Class"
-    }
+    classes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Class"
+        }
+    ]
 });
 
 // create model from above schema using Mongoose's model method
