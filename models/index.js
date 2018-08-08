@@ -1,6 +1,7 @@
 // Export object with our models
 
 module.exports = {
-    class: require("./Class"),
-    note: require("./Note")
+    Class: require("./Class"),
+    Note: require("./Note"),
+    Category: require("./Category")
 };
