@@ -2,14 +2,13 @@
 var axios = require("axios");
 var cheerio = require("cheerio");
 var db = require("../models");
-// var mongoose = require("mongoose");
+var mongoose = require("mongoose");
 
 module.exports = function (app) {
+    console.log();
 
-    // Route for getting all Articles from the db
     // Route for grabbing a specific Article by id, populate it with it's note
     // Route for saving/updating an Article's associated Note
-    // Make a request call to grab the HTML body from the site of your choice
 
 
     // A GET route for scraping the community ed website categories
@@ -18,16 +17,17 @@ module.exports = function (app) {
         axios.get("https://www.ed2go.com/mplscommed/").then(function (response) {
 
             let $ = cheerio.load(response.data);
-            console.log(response.data)
-            
-            $(".tier1").each(function (i, element) {
-                console.log("working")
-                let result = {};
-                // console.log(element.children)
-                result.title = $(this).text();
-                result.link = $(this).attr("href") + "&PageSize=50";
 
-                db.Class.create(result)
+            $(".tier1").each(function (i, element) {
+
+                let result = {};
+
+                // console.log(element)
+                result.title = element.children[0].data;
+                result.link = element.attribs.href + "&PageSize=50";
+                console.log(result)
+
+                db.class.create(result)
                     .then(function (dbClass) {
                         console.log(dbClass);
                     })
@@ -38,16 +38,26 @@ module.exports = function (app) {
 
             res.send("Scrape Complete")
         });
+    });
+
+    // Route for getting all Articles from the db
+    app.get("/classes", function(req, res) {
+        db.class.find()
+        .then(function(dbClass) {
+            res.json(dbClass);
+        })
+        .catch(function(err) {
+            res.json(err);
+        })
+    });
 
 
+    // Log the results once you've looped through each of the elements found with cheerio
+    // result.forEach((item, index) => {
+    //     $("#category-list").append(`<li><button id="cat-btn-${index}"data-link="${item.mainLink}"><button></li>`)
+    // });
+    // console.log(results);
 
-
-        // Log the results once you've looped through each of the elements found with cheerio
-        // result.forEach((item, index) => {
-        //     $("#category-list").append(`<li><button id="cat-btn-${index}"data-link="${item.mainLink}"><button></li>`)
-        // });
-        // console.log(results);
-    })
     // .then(function () {
     //     // * NEED TO ADD - on click of category
     //     // GET route to display selected categories on the page

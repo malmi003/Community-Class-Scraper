@@ -21,9 +21,9 @@ app.use(express.static("public"));
 
 // NOT SURE WHAT TO DO WITH BELOW
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongoHeadlines");
-// I added this part....
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsscraperdb";
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 // Routes
 // =====================================

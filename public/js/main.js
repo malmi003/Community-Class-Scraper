@@ -9,4 +9,9 @@ $(document).ready(function() {
     //     });
     // });
 
+    $.getJSON("/classes", function(data) {
+        data.forEach((item, index) => {
+                $("#category-list").append(`<li><button id="cat-btn-${index}"data-link="${item.link}">${item.title}<button></li>`)
+            });
+    })
 });
