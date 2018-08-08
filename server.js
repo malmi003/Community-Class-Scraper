@@ -2,13 +2,8 @@
 // ===================================
 var express = require("express");
 var bodyParser = require("body-parser");
+var logger = require("morgan");
 var mongoose = require("mongoose");
-
-// Scraping tools - works on the client and on the server
-var cheerio = require("cheerio");
-
-// Require all models
-var db = require("./models");
 
 // Initialize Express
 // =====================================
@@ -17,19 +12,22 @@ let PORT = process.env.PORT || 3000;
 
 // Configure middleware
 // =====================================
+// Use morgan logger for logging requests
+app.use(logger("dev"));
 // Use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+// NOT SURE WHAT TO DO WITH BELOW
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/week18Populater");
+mongoose.connect("mongodb://localhost/mongoHeadlines");
 // I added this part....
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 // Routes
 // =====================================
-require("./routes/apiRoutes.js")(app);
+require("./routes/routes.js")(app);
 
 
 // Start the server
