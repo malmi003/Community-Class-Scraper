@@ -85,8 +85,8 @@ module.exports = function (app) {
             })
     });
     // Route for getting all classes from the db
-    app.get("/classes", function (req, res) {
-        db.Class.find()
+    app.get("/classes/:id", function (req, res) {
+        db.Class.find({ _id: req.params.id })
             .then(function (dbClass) {
                 res.json(dbClass);
             })
@@ -99,7 +99,7 @@ module.exports = function (app) {
     app.get("/categorys/:id", function (req, res) {
         id = req.params.id;
         db.Category.find({ _id: id })
-            .populate("Class")
+            .populate("classes")
             .then(function (dbCategory) {
                 res.json(dbCategory);
             })
