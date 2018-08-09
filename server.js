@@ -8,7 +8,7 @@ var mongoose = require("mongoose");
 // Initialize Express
 // =====================================
 var app = express();
-let PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 8080;
 
 // Configure middleware
 // =====================================

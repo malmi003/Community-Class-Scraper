@@ -5,8 +5,6 @@ var db = require("../models");
 var mongoose = require("mongoose");
 
 module.exports = function (app) {
-    // console.log();
-
     // A GET route for scraping the community ed website categories
     app.get("/scrapeCategory", function (req, res) {
 
@@ -18,18 +16,25 @@ module.exports = function (app) {
 
                 let result = {};
 
-                // console.log(element)
                 result.title = element.children[0].data;
                 result.link = element.attribs.href + "&PageSize=10";
-                // console.log(result)
-
-                db.Category.create(result)
+                db.Category.find({ title: result.title })
                     .then(function (dbCategory) {
-                        console.log(dbCategory);
+                        // console.log(dbCategory)
+                        if (dbCategory == []) {
+                            db.Category.create(result)
+                                .then(function (dbCategory) {
+                                    console.log(dbCategory);
+                                })
+                                .catch(function (err) {
+                                    res.json(err);
+                                });
+                        }
                     })
                     .catch(function (err) {
                         return res.json(err);
                     });
+
             });
 
             res.send("Scrape Complete")
@@ -38,10 +43,7 @@ module.exports = function (app) {
 
 
     // A GET route for scraping the community ed website classes
-
-    // need to run this for each page that the category scrape returns, then after all the classes are scraped, you need to set the relationship with category....
     app.post("/scrapeClasses/", function (req, res) {
-        // console.log(req.body.url)
         let url = req.body.url;
         let id = req.body.id
         axios.get(url).then(function (response) {
@@ -52,26 +54,29 @@ module.exports = function (app) {
 
                 let result = {};
 
-                // console.log(element)
                 result.title = element.children[1].children[1].children[0].data;
                 result.link = element.children[1].children[1].attribs.href;
-                // console.log(result);
 
-                db.Class.create(result)
+                // insert if stmt to check if class already exists, if it doesn't -add
+                db.Class.find({ link: result.link })
                     .then(function (dbClass) {
-                        // console.log(dbClass, "!!");
-                         return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id }}, { new: true })
+                        // console.log(dbClass)
+                        if (dbClass.length == 0) {
+                            console.log("in the if")
+                            db.Class.create(result)
+                                .then(function (dbClass) {
+                                    return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id } }, { new: true })
+                                })
+                                .catch(function (err) {
+                                    res.json(err);
+                                });
+                        }
                     })
-                    // .then(function (dbCategory) {
-                    //     // console.log(dbCategory)
-                    //     res.json(dbCategory);
-                    // })
                     .catch(function (err) {
                         res.json(err);
                     });
+                    res.send("Class Scrape Complete")
             });
-
-            res.send("Class Scrape Complete")
         });
     });
     // Route for getting all cats from the db
