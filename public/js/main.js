@@ -8,20 +8,36 @@ $(document).ready(function () {
             $("#category-list").append(`<li>
                 <a class="btn btn-info cat-btn" data-toggle="collapse" href="#cl-${item._id}" role="button" aria-expanded="false"><h4 id="cat-btn-${index}" data-link="${item.link}">${item.title}<span class="small"> click to expand</span></h4></a></li>
                 
-                <ul class="class-list collapse" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape btn btn-outline-warning btn-sm" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></ul>`)
+                <ul class="class-list collapse" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape btn btn-outline-warning btn-sm" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button><div id="ccl-${item._id}" class="card-columns"><div></ul>`)
+
         });
     }).then(function (data) {
         data.forEach(item => {
             item.classes.forEach((newItem, index) => {
                 $.get("/classes/" + newItem, function (data) {
                     if (data[0].saved == true) {
-                        $("#cl-" + item._id).append(`<li><h5>${data[0].title}</h5> 
-                        <p>${data[0].description}</p><button class="unsave-btn btn btn-danger" data-id="${newItem}">unsave</button></li>`)
+                        $("#ccl-" + item._id).append(
+                            `<div class="card" style="width: 18rem">
+                          <div class="card-body">
+                            <h5 class="card-title">${data[0].title}</h5>
+                           <p class="card-text">${data[0].description}</p>
+                           <button class="unsave-btn btn btn-danger btn-block" data-id="${newItem}">unsave</button>
+                         </div>
+                         </div>`
+                        )
                     } else {
-                        $("#cl-" + item._id).append(`<li><h5>${data[0].title}</h5> 
-                        <p>${data[0].description}<button class="save-btn btn btn-success" data-id="${newItem}">save</button></li>`)
+                        $("#ccl-" + item._id).append(
+                                `<div class="card" style="width: 18rem;">
+                          <div class="card-body">
+                            <h5 class="card-title">${data[0].title}</h5>
+                           <p class="card-text">${data[0].description}</p>
+                           <button class="save-btn btn btn-success btn-block" data-id="${newItem}">save</button>
+                         </div>
+                         </div>`
+                        )
                     }
                 })
+
             })
 
         })
@@ -40,7 +56,7 @@ $(document).ready(function () {
                     $("#category-list").append(`<li>
                                 <h4 id="cat-btn-${index}"data-link="${item.link}">${item.title}</h4></li>
 
-                                <ul class="class-list" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></ul>`
+                                <ul class="class-list" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button><div id="ccl-${item._id}" class="card-group"><div></ul>`
                     );
                 });
             })
@@ -101,13 +117,20 @@ $(document).ready(function () {
                     data.forEach(item => {
                         let noteList = [];
                         item.notes.forEach(item => {
-                            noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                        <button class="delete-note btn btn-danger" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+                            noteList.push(
+                            `
+                            <li class="card" style="width: 18rem">
+                            <div class="card-body">
+                              <h5 class="card-title">${newItem.title}</h5>
+                             <p class="card-text">${newItem.body}</p>
+                             <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                           </div>
+                           </li>`)
                         })
                         let newNoteList = noteList.join("");
 
                         $("#saved-list").append(
-                            `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                            `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes:</h5><ul>${newNoteList}</ul>`)
                     })
                 })
 
@@ -117,7 +140,7 @@ $(document).ready(function () {
     $(document).on("click", ".save-btn", function () {
         // console.log("working")
         let thisId = $(this).attr("data-id");
-        $(this).attr("class", "unsave-btn btn btn-danger");
+        $(this).attr("class", "unsave-btn btn btn-danger btn-block");
         $(this).html("unsave");
         $.ajax({
             method: "POST",
@@ -130,7 +153,7 @@ $(document).ready(function () {
 
     $(document).on("click", ".unsave-btn", function () {
         let thisId = $(this).attr("data-id");
-        $(this).attr("class", "save-btn btn btn-success");
+        $(this).attr("class", "save-btn btn btn-success btn-block");
         $(this).html("save");
         $.ajax({
             method: "POST",
@@ -158,13 +181,20 @@ $(document).ready(function () {
             data.forEach(item => {
                 let noteList = [];
                 item.notes.forEach(newItem => {
-                    noteList.push(`<li><span class="note-title-display">${newItem.title}</span>: ${newItem.body}
-                    <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-class="${item._id}" data-id="${newItem._id}">update note</button></li>`)
+                    noteList.push(`
+                    <li class="card" style="width: 18rem">
+                    <div class="card-body">
+                      <h5 class="card-title">${newItem.title}</h5>
+                     <p class="card-text">${newItem.body}</p>
+                     <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                   </div>
+                   </li>`
+                )
                 })
                 let newNoteList = noteList.join("");
 
                 $("#saved-list").append(
-                    `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                    `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes: </h5><ul>${newNoteList}</ul>`)
             })
 
         })
@@ -175,7 +205,7 @@ $(document).ready(function () {
         $("#view-main-page").addClass("d-none");
         $("#cat-class-list").removeClass("d-none");
         $("#saved-list").addClass("d-none");
-        
+
     });
 
     $(document).on("click", ".delete-note", function () {
@@ -195,13 +225,20 @@ $(document).ready(function () {
                 data.forEach(item => {
                     let noteList = [];
                     item.notes.forEach(item => {
-                        noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                    <button class="delete-note btn btn-danger" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note - not functional</button></li>`)
+                        noteList.push(`
+                    <li class="card" style="width: 18rem">
+                    <div class="card-body">
+                      <h5 class="card-title">${newItem.title}</h5>
+                     <p class="card-text">${newItem.body}</p>
+                     <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                   </div>
+                   </li>`
+                )
                     })
                     let newNoteList = noteList.join("");
 
                     $("#saved-list").append(
-                        `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                        `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes:</h5><ul>${newNoteList}</ul>`)
                 })
 
             })
@@ -218,13 +255,13 @@ $(document).ready(function () {
             url: "/notes/" + thisId
         }).then(function (dbNote) {
             console.log(dbNote);
-            $(".title #data-id"+classId).val(dbNote.title);
-            $(".note #data-id"+classId).val(dbNote.body);
+            $(".title #data-id" + classId).val(dbNote.title);
+            $(".note #data-id" + classId).val(dbNote.body);
 
         })
-            // .then(function (data) {
-            //     return db.Note.findOneAndUpdate({ _id: categoryId }, { classes: dbClass._id }, { new: true })
-            // })
+        // .then(function (data) {
+        //     return db.Note.findOneAndUpdate({ _id: categoryId }, { classes: dbClass._id }, { new: true })
+        // })
         // rerender saved classes
         // $.ajax({
         //     method: "GET",

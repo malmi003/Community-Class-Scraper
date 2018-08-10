@@ -12,3 +12,9 @@ li {
 .small {
     font-size: .3em;
 }
+/* .save-btn, .unsave-btn {
+    margin-bottom: 3em;
+} */
+.card {
+    display:inline-block;
+}

@@ -48,10 +48,16 @@ module.exports = function (app) {
             $(".description").each(function (i, element) {
 
                 let result = {};
-                console.log(element.children[3].children[1].children[0].data);
+                console.log(element.children)
+                // console.log(element.children[3].children[1].children[0].data);
                 result.title = element.children[1].children[1].children[0].data;
                 result.link = element.children[1].children[1].attribs.href;
-                result.description = element.children[3].children[1].children[0].data;
+                if (element.children[3].children[1].children[0] != undefined) {
+                    result.description = element.children[3].children[1].children[0].data;
+                } else {
+                    result.description = "Description not available"
+                }
+
 
                 // insert if stmt to check if class already exists, if it doesn't -add
                 db.Class.find({ link: result.link })
@@ -195,7 +201,7 @@ module.exports = function (app) {
 
     // this DOES NOT WORK YET!!
     app.post("/updateNote/:id/:body", function (req, res) {
-        db.Note.update({ _id: req.params.id }, {$set: {body: "wrc"}})
+        db.Note.update({ _id: req.params.id }, { $set: { body: "wrc" } })
             .then(function (dbNote) {
                 res.json(dbNote);
                 location.reload();
