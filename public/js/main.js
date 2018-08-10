@@ -17,7 +17,7 @@ $(document).ready(function () {
             item.classes.forEach((newItem, index) => {
                 $.get("/classes/" + newItem, function (data) {
                     // console.log(newItem)
-                    $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}"></input><input class="note" data-id="${newItem}"></input></li>`)
+                    $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}" id="title${newItem}"></input><input id="note${newItem}" class="note" data-id="${newItem}"></input></li>`)
                 })
             })
 
@@ -70,11 +70,10 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".add-btn", function () {
-        console.log("");
+        console.log("noting");
         // When you click the savenote button
-        $(document).on("click", "#savenote", function () {
             // Grab the id associated with the article from the submit button
-            var thisId = $(this).attr("id");
+            var thisId = $(this).attr("data-id");
 
             // Run a POST request to change the note, using what's entered in the inputs
             $.ajax({
@@ -82,9 +81,9 @@ $(document).ready(function () {
                 url: "/classes/" + thisId,
                 data: {
                     // Value taken from title input
-                    title: $("#titleinput").val(),
+                    title: $("#title" + thisId).val(),
                     // Value taken from note textarea
-                    body: $("#bodyinput").val()
+                    body: $("#note" + thisId).val(),
                 }
             })
                 // With that done
@@ -92,15 +91,13 @@ $(document).ready(function () {
                     // Log the response
                     console.log(data);
                     // Empty the notes section
-                    $("#notes").empty();
+                    $("#title" + thisId).empty();
+                    $("#note" + thisId).empty();
                 });
 
             // Also, remove the values entered in the input and textarea for note entry
             $("#titleinput").val("");
             $("#bodyinput").val("");
         });
-
-    });
-
 
 });

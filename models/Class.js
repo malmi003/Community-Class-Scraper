@@ -12,7 +12,7 @@ let ClassSchema = new Schema({
         required: true,
         unique: true
     },
-    note: [
+    notes: [
         {
             type: Schema.Types.ObjectId,
             ref: "Note"

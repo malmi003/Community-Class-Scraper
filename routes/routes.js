@@ -95,7 +95,7 @@ module.exports = function (app) {
                 console.log(err);
             })
     });
-    // Route for getting all classes from the db
+    // Route for getting specific classes from the db
     app.get("/classes/:id", function (req, res) {
         db.Class.find({ _id: req.params.id })
             .then(function (dbClass) {
@@ -149,9 +149,10 @@ module.exports = function (app) {
     // Route for saving/updating an class's associated Note
     app.post("/classes/:id", function (req, res) {
         classId = req.params.id;
+        console.log(req.body)
         db.Note.create(req.body)
             .then(function (dbNote) {
-                return db.class.findOneAndUpdate({ _id: classId }, { Note: dbNote._id }, { new: true })
+                return db.Class.findOneAndUpdate({ _id: classId }, { notes: dbNote._id }, { new: true })
             })
             .then(function (dbClass) {
                 res.json(dbClass);
