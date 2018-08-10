@@ -12,6 +12,9 @@ let ClassSchema = new Schema({
         required: true,
         unique: true
     },
+    description: {
+        type: String,
+    },
     notes: [
         {
             type: Schema.Types.ObjectId,

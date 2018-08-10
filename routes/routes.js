@@ -48,9 +48,10 @@ module.exports = function (app) {
             $(".description").each(function (i, element) {
 
                 let result = {};
-
+                console.log(element.children[3].children[1].children[0].data);
                 result.title = element.children[1].children[1].children[0].data;
                 result.link = element.children[1].children[1].attribs.href;
+                result.description = element.children[3].children[1].children[0].data;
 
                 // insert if stmt to check if class already exists, if it doesn't -add
                 db.Class.find({ link: result.link })

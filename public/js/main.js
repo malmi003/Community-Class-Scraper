@@ -6,20 +6,20 @@ $(document).ready(function () {
         data.forEach((item, index) => {
             // console.log(item)
             $("#category-list").append(`<li>
-                <a class="btn btn-info cat-btn" data-toggle="collapse" href="#cl-${item._id}" role="button" aria-expanded="false"><h4 id="cat-btn-${index}" data-link="${item.link}">${item.title}<span class="small"> click to expand</span></h4></a>
-
-                <button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></li>
+                <a class="btn btn-info cat-btn" data-toggle="collapse" href="#cl-${item._id}" role="button" aria-expanded="false"><h4 id="cat-btn-${index}" data-link="${item.link}">${item.title}<span class="small"> click to expand</span></h4></a></li>
                 
-                <ul class="class-list collapse" id="cl-${item._id}"></ul>`)
+                <ul class="class-list collapse" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape btn btn-outline-warning btn-sm" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></ul>`)
         });
     }).then(function (data) {
         data.forEach(item => {
             item.classes.forEach((newItem, index) => {
                 $.get("/classes/" + newItem, function (data) {
                     if (data[0].saved == true) {
-                        $("#cl-" + item._id).append(`<li>${data[0].title} <button class="unsave-btn" data-id="${newItem}">unsave</button></li>`)
+                        $("#cl-" + item._id).append(`<li><h5>${data[0].title}</h5> 
+                        <p>${data[0].description}</p><button class="unsave-btn btn btn-danger" data-id="${newItem}">unsave</button></li>`)
                     } else {
-                        $("#cl-" + item._id).append(`<li>${data[0].title} <button class="save-btn" data-id="${newItem}">save</button></li>`)
+                        $("#cl-" + item._id).append(`<li><h5>${data[0].title}</h5> 
+                        <p>${data[0].description}<button class="save-btn btn btn-success" data-id="${newItem}">save</button></li>`)
                     }
                 })
             })
@@ -38,11 +38,9 @@ $(document).ready(function () {
                     // console.log(item)
                     // $("#category-list").empty();
                     $("#category-list").append(`<li>
-                                <h4 id="cat-btn-${index}"data-link="${item.link}">${item.title}</h4>
-                
-                                <button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></li>
+                                <h4 id="cat-btn-${index}"data-link="${item.link}">${item.title}</h4></li>
 
-                                <ul class="class-list" id="cl-${item._id}"></ul>`
+                                <ul class="class-list" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></ul>`
                     );
                 });
             })
@@ -99,17 +97,17 @@ $(document).ready(function () {
                     url: "/savedClasses/"
                 }).then(function (data) {
                     console.log(data)
-                    $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+                    $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list</button>")
                     data.forEach(item => {
                         let noteList = [];
                         item.notes.forEach(item => {
                             noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                        <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+                        <button class="delete-note btn btn-danger" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
                         })
                         let newNoteList = noteList.join("");
 
                         $("#saved-list").append(
-                            `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                            `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
                     })
                 })
 
@@ -149,17 +147,17 @@ $(document).ready(function () {
             url: "/savedClasses/"
         }).then(function (data) {
             console.log(data)
-            $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+            $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list</button>")
             data.forEach(item => {
                 let noteList = [];
                 item.notes.forEach(newItem => {
                     noteList.push(`<li><span class="note-title-display">${newItem.title}</span>: ${newItem.body}
-                    <button class="delete-note" data-id="${newItem._id}">delete note</button><button class="update-note" data-class="${item._id}" data-id="${newItem._id}">update note</button></li>`)
+                    <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-class="${item._id}" data-id="${newItem._id}">update note</button></li>`)
                 })
                 let newNoteList = noteList.join("");
 
                 $("#saved-list").append(
-                    `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                    `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
             })
 
         })
@@ -182,17 +180,17 @@ $(document).ready(function () {
                 url: "/savedClasses/"
             }).then(function (data) {
                 console.log(data)
-                $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+                $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list<button>")
                 data.forEach(item => {
                     let noteList = [];
                     item.notes.forEach(item => {
                         noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                    <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note - not functional</button></li>`)
+                    <button class="delete-note btn btn-danger" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note - not functional</button></li>`)
                     })
                     let newNoteList = noteList.join("");
 
                     $("#saved-list").append(
-                        `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+                        `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
                 })
 
             })

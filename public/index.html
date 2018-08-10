@@ -19,15 +19,17 @@
 <body>
   <!-- lifelong leaner??? link to different courses and your thoughts on them - community ed courses
   https://www.ed2go.com/mplscommed/SearchResults.aspx?CurrPage=1&CategoryId=69&Sort=RELEVANCE&SortAsc=True&PageSize=50-->
-  <header class="jumbotron">
-    <h1 class="text-center display-4">Learning to Scrape By</h1>
-    <h2 class="text-muted text-center lead">For lifetime community learners</h2>
+  <header class="jumbotron text-center">
+    <h1 class="display-4">Learning to Scrape By</h1>
+    <h2 class="text-muted lead">For lifetime community learners</h2>
     <hr class="my-4">
+    <p>Explore the community education classes available to you - affordable, convenient, and geared towards a better you!</p>
+    <button id="initiate-scrape-btn" class="btn btn-warning">Check for new class offerings</button>
+    <button id="view-saved" class='btn btn-secondary'>View saved classes</button>
   </header>
   <article id="cat-class-list">
-    <h3>Choose your class category below to see current offerings</h3>
-    <button id="initiate-scrape-btn">Check for new class offerings</button>
-    <button id="view-saved">View saved classes</button>
+    <h3>Current Class Categories</h3>
+    
     <ul id="category-list">
       <!-- add class offerings here-->
     </ul>
