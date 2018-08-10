@@ -97,7 +97,7 @@ $(document).ready(function () {
                     url: "/savedClasses/"
                 }).then(function (data) {
                     console.log(data)
-                    $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list</button>")
+                    $("#saved-list").html("<h3>Saved Classes</h3>")
                     data.forEach(item => {
                         let noteList = [];
                         item.notes.forEach(item => {
@@ -117,23 +117,28 @@ $(document).ready(function () {
     $(document).on("click", ".save-btn", function () {
         // console.log("working")
         let thisId = $(this).attr("data-id");
+        $(this).attr("class", "unsave-btn btn btn-danger");
+        $(this).html("unsave");
         $.ajax({
             method: "POST",
             url: "/savedClasses/" + thisId
         }).then(function (data) {
             console.log(data);
-            location.reload();
+            // location.reload();
         })
     });
 
     $(document).on("click", ".unsave-btn", function () {
         let thisId = $(this).attr("data-id");
+        $(this).attr("class", "save-btn btn btn-success");
+        $(this).html("save");
         $.ajax({
             method: "POST",
             url: "/unsavedClasses/" + thisId
         }).then(function (data) {
             console.log(data);
-            location.reload();
+            // location.reload();
+
 
         })
     });
@@ -142,12 +147,14 @@ $(document).ready(function () {
     $(document).on("click", "#view-saved", function () {
         $("#cat-class-list").addClass("d-none");
         $("#saved-list").removeClass("d-none");
+        $("#view-saved").addClass("d-none");
+        $("#view-main-page").removeClass("d-none");
         $.ajax({
             method: "GET",
             url: "/savedClasses/"
         }).then(function (data) {
             console.log(data)
-            $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list</button>")
+            $("#saved-list").html("<h3>Saved Classes</h3>")
             data.forEach(item => {
                 let noteList = [];
                 item.notes.forEach(newItem => {
@@ -164,7 +171,11 @@ $(document).ready(function () {
     });
 
     $(document).on("click", "#view-main-page", function () {
-        location.reload();
+        $("#view-saved").removeClass("d-none");
+        $("#view-main-page").addClass("d-none");
+        $("#cat-class-list").removeClass("d-none");
+        $("#saved-list").addClass("d-none");
+        
     });
 
     $(document).on("click", ".delete-note", function () {
@@ -180,7 +191,7 @@ $(document).ready(function () {
                 url: "/savedClasses/"
             }).then(function (data) {
                 console.log(data)
-                $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page' class='btn btn-secondary'>Back to class list<button>")
+                $("#saved-list").html("<h3>Saved Classes</h3>")
                 data.forEach(item => {
                     let noteList = [];
                     item.notes.forEach(item => {
@@ -220,7 +231,7 @@ $(document).ready(function () {
         //     url: "/savedClasses/"
         // }).then(function (data) {
         //     console.log(data)
-        //     $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+        //     $("#saved-list").html("<h3>Saved Classes</h3>")
         //     data.forEach(item => {
         //         let noteList = [];
         //         item.notes.forEach(item => {
