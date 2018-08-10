@@ -17,9 +17,9 @@ $(document).ready(function () {
                 $.get("/classes/" + newItem, function (data) {
                     if (data[0].saved == true) {
                         $("#ccl-" + item._id).append(
-                            `<div class="card" style="width: 18rem">
+                            `<div class="card border-info mb-3" style="width: 18rem">
+                            <h5 class="card-header text-white bg-info">${data[0].title}</h5>
                           <div class="card-body">
-                            <h5 class="card-title">${data[0].title}</h5>
                            <p class="card-text">${data[0].description}</p>
                            <button class="unsave-btn btn btn-danger btn-block" data-id="${newItem}">unsave</button>
                          </div>
@@ -27,9 +27,9 @@ $(document).ready(function () {
                         )
                     } else {
                         $("#ccl-" + item._id).append(
-                                `<div class="card" style="width: 18rem;">
+                                `<div class="card border-info mb-3" style="width: 18rem;">
+                                <h5 class="card-header text-white bg-info">${data[0].title}</h5>
                           <div class="card-body">
-                            <h5 class="card-title">${data[0].title}</h5>
                            <p class="card-text">${data[0].description}</p>
                            <button class="save-btn btn btn-success btn-block" data-id="${newItem}">save</button>
                          </div>
@@ -113,24 +113,25 @@ $(document).ready(function () {
                     url: "/savedClasses/"
                 }).then(function (data) {
                     console.log(data)
-                    $("#saved-list").html("<h3>Saved Classes</h3>")
+                    $("#saved-list").html("<h3 class='text-center'>Saved Classes</h3><hr>")
                     data.forEach(item => {
                         let noteList = [];
-                        item.notes.forEach(item => {
-                            noteList.push(
-                            `
+                        item.notes.forEach(newItem => {
+                            noteList.push(`
                             <li class="card" style="width: 18rem">
+                            <h5 class="card-header text-white bg-info">${newItem.title}</h5>
                             <div class="card-body">
-                              <h5 class="card-title">${newItem.title}</h5>
                              <p class="card-text">${newItem.body}</p>
-                             <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                             <button class="delete-note btn btn-danger btn-block" data-id="${newItem._id}">delete note</button></li>
                            </div>
                            </li>`)
                         })
                         let newNoteList = noteList.join("");
 
                         $("#saved-list").append(
-                            `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes:</h5><ul>${newNoteList}</ul>`)
+                            `<h4 class="text-center">${item.title}</h4> 
+                            <p>${item.description}</p>
+                            <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input placeholder="title" class="title" data-id="${item._id}" id="title${item._id}"></input><input placeholder="body" id="note${item._id}" class="note" data-id="${item._id}"></input><h5>Notes:</h5><ul>${newNoteList}</ul><hr>`)
                     })
                 })
 
@@ -177,16 +178,17 @@ $(document).ready(function () {
             url: "/savedClasses/"
         }).then(function (data) {
             console.log(data)
-            $("#saved-list").html("<h3>Saved Classes</h3>")
+            $("#saved-list").html("<h3 class='text-center'>Saved Classes</h3><hr>")
             data.forEach(item => {
                 let noteList = [];
                 item.notes.forEach(newItem => {
                     noteList.push(`
-                    <li class="card" style="width: 18rem">
+                    <li class="card border-info mb-3" style="width: 18rem">
+                    <h5 class="card-header text-white bg-info">${newItem.title}</h5>
                     <div class="card-body">
-                      <h5 class="card-title">${newItem.title}</h5>
+                      
                      <p class="card-text">${newItem.body}</p>
-                     <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                     <button class="delete-note btn btn-danger btn-block" data-id="${newItem._id}">delete note</button></li>
                    </div>
                    </li>`
                 )
@@ -194,7 +196,7 @@ $(document).ready(function () {
                 let newNoteList = noteList.join("");
 
                 $("#saved-list").append(
-                    `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes: </h5><ul>${newNoteList}</ul>`)
+                    `<h4 class="text-center">${item.title}</h4> <p>${item.description}</p><button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input placeholder="title" class="title" data-id="${item._id}" id="title${item._id}"></input><input placeholder="body" id="note${item._id}" class="note" data-id="${item._id}"></input><h5>Notes: </h5><ul>${newNoteList}</ul><hr>`)
             })
 
         })
@@ -221,16 +223,17 @@ $(document).ready(function () {
                 url: "/savedClasses/"
             }).then(function (data) {
                 console.log(data)
-                $("#saved-list").html("<h3>Saved Classes</h3>")
+                $("#saved-list").html("<h3 class='text-center'>Saved Classes</h3><hr>")
                 data.forEach(item => {
                     let noteList = [];
-                    item.notes.forEach(item => {
+                    item.notes.forEach(newItem => {
                         noteList.push(`
-                    <li class="card" style="width: 18rem">
+                    <li class="card border-info mb-3" style="width: 18rem">
+                    <h5 class="card-header text-white bg-info">${newItem.title}</h5>
                     <div class="card-body">
-                      <h5 class="card-title">${newItem.title}</h5>
+                      
                      <p class="card-text">${newItem.body}</p>
-                     <button class="delete-note btn btn-danger" data-id="${newItem._id}">delete note</button><button class="update-note" data-id="${newItem._id}">update note</button></li>
+                     <button class="delete-note btn btn-danger btn-block" data-id="${newItem._id}">delete note</button></li>
                    </div>
                    </li>`
                 )
@@ -238,7 +241,7 @@ $(document).ready(function () {
                     let newNoteList = noteList.join("");
 
                     $("#saved-list").append(
-                        `<li><h4>${item.title}</h4> <button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Notes:</h5><ul>${newNoteList}</ul>`)
+                        `<h4 class="text-center">${item.title}</h4> <p>${item.description}</p><button class="add-btn btn btn-success" data-id="${item._id}">add note</button><input placeholder="title" class="title" data-id="${item._id}" id="title${item._id}"></input><input placeholder="body" id="note${item._id}" class="note" data-id="${item._id}"></input><h5>Notes:</h5><ul>${newNoteList}</ul><hr>`)
                 })
 
             })
