@@ -185,8 +185,32 @@ module.exports = function (app) {
     // get all saved classes
     app.get("/savedClasses/", function (req, res) {
         db.Class.find({ saved: true })
+            .populate("notes")
             .then(function (dbCategory) {
                 res.json(dbCategory);
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    });
+
+    app.post("/deleteNote/:id", function (req, res) {
+        db.Note.remove({ _id: req.params.id })
+            .then(function (dbNote) {
+                res.json(dbNote);
+                location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    });
+
+    // this DOES NOT WORK YET!!
+    app.post("/updateNote/:id/:body", function (req, res) {
+        db.Note.update({ _id: req.params.id }, {$set: {body: "wrc"}})
+            .then(function (dbNote) {
+                res.json(dbNote);
+                location.reload();
             })
             .catch(function (err) {
                 console.log(err);

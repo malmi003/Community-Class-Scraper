@@ -150,8 +150,15 @@ $(document).ready(function () {
             console.log(data)
             $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
             data.forEach(item => {
+                let noteList = [];
+                item.notes.forEach(item => {
+                    noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
+                    <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+                })
+                let newNoteList = noteList.join("");
+    
                 $("#saved-list").append(
-                    `<li>${item.title} <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li>`)
+                    `<li>${item.title} <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h4>Class Notes</h4><ul>${newNoteList}</ul>`)
             })
             // $.getJSON("/savedClasses", function(data) {
             //     console.log(data)
@@ -161,5 +168,32 @@ $(document).ready(function () {
 
     $(document).on("click", "#view-main-page", function () {
         location.reload();
+    });
+
+    $(document).on("click", ".delete-note", function () {
+        let thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/deleteNote/" + thisId
+        }).then(function (data) {
+            console.log(data);
+            // location.reload();
+            // $.getJSON("/savedClasses", function(data) {
+            //     console.log(data)
+            // })
+        })
+    });
+    $(document).on("click", "#update-note", function () {
+        let thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/savedClasses/" + thisId
+        }).then(function (data) {
+            console.log(data);
+            location.reload();
+            // $.getJSON("/savedClasses", function(data) {
+            //     console.log(data)
+            // })
+        })
     });
 });
