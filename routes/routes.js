@@ -192,7 +192,6 @@ module.exports = function (app) {
         db.Note.remove({ _id: req.params.id })
             .then(function (dbNote) {
                 res.json(dbNote);
-                location.reload();
             })
             .catch(function (err) {
                 console.log(err);
