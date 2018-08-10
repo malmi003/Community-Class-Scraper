@@ -27,20 +27,12 @@ module.exports = function (app) {
                     .then(function (dbCategory) {
                         console.log(dbCategory);
                     })
-                    //             .catch(function (err) {
-                    //                 console.log(err);;
-                    //             })
-                    //     }
-                    // })
                     .catch(function (err) {
                         console.log(err);
                     })
             })
             res.send("Category Scrape Complete");
         })
-        // .then(function(data){
-        //     res.json(data);
-        // })
     });
 
 
@@ -70,9 +62,6 @@ module.exports = function (app) {
                                 .then(function (dbClass) {
                                     return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id } }, { new: true })
                                 })
-                            //             .catch(function (err) {
-                            //                 console.log(err);
-                            //             });
                         }
                     })
                     .catch(function (err) {
@@ -81,9 +70,7 @@ module.exports = function (app) {
             })
             res.send("Category Scrape Complete");
         })
-        // .then(function(data){
-        //     res.json(data);
-        // })
+
     });
     // Route for getting all cats from the db
     app.get("/categorys", function (req, res) {
@@ -95,16 +82,6 @@ module.exports = function (app) {
                 console.log(err);
             })
     });
-    // Route for getting specific classes from the db
-    // app.get("/classes/:id", function (req, res) {
-    //     db.Class.find({ _id: req.params.id })
-    //         .then(function (dbClass) {
-    //             res.json(dbClass);
-    //         })
-    //         .catch(function (err) {
-    //             res.json(err);
-    //         })
-    // });
 
     // Route for grabbing a specific category by id, populate it with it's class
     app.get("/categorys/:id", function (req, res) {
@@ -130,7 +107,17 @@ module.exports = function (app) {
                 res.json(err);
             });
     });
-
+    // find note by id
+    app.get("/notes/:id", function (req, res) {
+        id = req.params.id;
+        db.Note.find({ _id: id })
+            .then(function (dbNote) {
+                res.json(dbNote);
+            })
+            .catch(function (err) {
+                res.json(err);
+            });
+    });
     // Route for saving/updating a cat's associated class
     app.post("categorys/:id", function (req, res) {
         categoryId = req.params.id;

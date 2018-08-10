@@ -6,11 +6,11 @@ $(document).ready(function () {
         data.forEach((item, index) => {
             // console.log(item)
             $("#category-list").append(`<li>
-                <h4 id="cat-btn-${index}"data-link="${item.link}">${item.title}</h4>
+                <a class="btn btn-info cat-btn" data-toggle="collapse" href="#cl-${item._id}" role="button" aria-expanded="false"><h4 id="cat-btn-${index}" data-link="${item.link}">${item.title}<span class="small"> click to expand</span></h4></a>
 
                 <button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button></li>
                 
-                <ul class="class-list" id="cl-${item._id}"></ul>`)
+                <ul class="class-list collapse" id="cl-${item._id}"></ul>`)
         });
     }).then(function (data) {
         data.forEach(item => {
@@ -21,9 +21,6 @@ $(document).ready(function () {
                     } else {
                         $("#cl-" + item._id).append(`<li>${data[0].title} <button class="save-btn" data-id="${newItem}">save</button></li>`)
                     }
-
-                    // below is good code for adding note!
-                    // $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}" id="title${newItem}"></input><input id="note${newItem}" class="note" data-id="${newItem}"></input></li>`)
                 })
             })
 
@@ -110,20 +107,13 @@ $(document).ready(function () {
                         <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
                         })
                         let newNoteList = noteList.join("");
-    
+
                         $("#saved-list").append(
                             `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
                     })
-                    // $.getJSON("/savedClasses", function(data) {
-                    //     console.log(data)
-                    // })
                 })
-    
-            });
 
-        // Also, remove the values entered in the input and textarea for note entry
-        // $("#title" + thisId).html("");
-        // $("#note" + thisId).empty();
+            });
     });
 
     $(document).on("click", ".save-btn", function () {
@@ -135,14 +125,10 @@ $(document).ready(function () {
         }).then(function (data) {
             console.log(data);
             location.reload();
-            // $.getJSON("/savedClasses", function(data) {
-            //     console.log(data)
-            // })
         })
     });
 
     $(document).on("click", ".unsave-btn", function () {
-        // console.log("working")
         let thisId = $(this).attr("data-id");
         $.ajax({
             method: "POST",
@@ -150,15 +136,12 @@ $(document).ready(function () {
         }).then(function (data) {
             console.log(data);
             location.reload();
-            // $.getJSON("/savedClasses", function(data) {
-            //     console.log(data)
-            // })
+
         })
     });
 
     // show saved classes only
     $(document).on("click", "#view-saved", function () {
-        // console.log("working")
         $("#cat-class-list").addClass("d-none");
         $("#saved-list").removeClass("d-none");
         $.ajax({
@@ -169,18 +152,16 @@ $(document).ready(function () {
             $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
             data.forEach(item => {
                 let noteList = [];
-                item.notes.forEach(item => {
-                    noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                    <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+                item.notes.forEach(newItem => {
+                    noteList.push(`<li><span class="note-title-display">${newItem.title}</span>: ${newItem.body}
+                    <button class="delete-note" data-id="${newItem._id}">delete note</button><button class="update-note" data-class="${item._id}" data-id="${newItem._id}">update note</button></li>`)
                 })
                 let newNoteList = noteList.join("");
 
                 $("#saved-list").append(
                     `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
             })
-            // $.getJSON("/savedClasses", function(data) {
-            //     console.log(data)
-            // })
+
         })
     });
 
@@ -195,8 +176,7 @@ $(document).ready(function () {
             url: "/deleteNote/" + thisId
         }).then(function (data) {
             console.log(data);
-            // $("#cat-class-list").addClass("d-none");
-            // $("#saved-list").removeClass("d-none");
+
             $.ajax({
                 method: "GET",
                 url: "/savedClasses/"
@@ -207,51 +187,54 @@ $(document).ready(function () {
                     let noteList = [];
                     item.notes.forEach(item => {
                         noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                    <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+                    <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note - not functional</button></li>`)
                     })
                     let newNoteList = noteList.join("");
 
                     $("#saved-list").append(
                         `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
                 })
-                // $.getJSON("/savedClasses", function(data) {
-                //     console.log(data)
-                // })
+
             })
 
         })
     });
-    $(document).on("click", "#update-note", function () {
+
+    // CURRENTLY DOES NOT WORK!!
+    $(document).on("click", ".update-note", function () {
         let thisId = $(this).attr("data-id");
+        let classId = $(this).attr("class-id");
         $.ajax({
-            method: "POST",
-            url: "/savedClasses/" + thisId
-        }).then(function (data) {
-            console.log(data);
-            // $("#cat-class-list").addClass("d-none");
-            // $("#saved-list").removeClass("d-none");
-            $.ajax({
-                method: "GET",
-                url: "/savedClasses/"
-            }).then(function (data) {
-                console.log(data)
-                $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
-                data.forEach(item => {
-                    let noteList = [];
-                    item.notes.forEach(item => {
-                        noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
-                        <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
-                    })
-                    let newNoteList = noteList.join("");
-    
-                    $("#saved-list").append(
-                        `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
-                })
-                // $.getJSON("/savedClasses", function(data) {
-                //     console.log(data)
-                // })
-            })
+            method: "GET",
+            url: "/notes/" + thisId
+        }).then(function (dbNote) {
+            console.log(dbNote);
+            $(".title #data-id"+classId).val(dbNote.title);
+            $(".note #data-id"+classId).val(dbNote.body);
 
         })
+            // .then(function (data) {
+            //     return db.Note.findOneAndUpdate({ _id: categoryId }, { classes: dbClass._id }, { new: true })
+            // })
+        // rerender saved classes
+        // $.ajax({
+        //     method: "GET",
+        //     url: "/savedClasses/"
+        // }).then(function (data) {
+        //     console.log(data)
+        //     $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+        //     data.forEach(item => {
+        //         let noteList = [];
+        //         item.notes.forEach(item => {
+        //             noteList.push(`<li><span class="note-title-display">${item.title}</span>: ${item.body}
+        //                 <button class="delete-note" data-id="${item._id}">delete note</button><button class="update-note" data-id="${item._id}">update note</button></li>`)
+        //         })
+        //         let newNoteList = noteList.join("");
+
+        //         $("#saved-list").append(
+        //             `<li><h4>${item.title}</h4> <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li><h5>Class Notes</h5><ul>${newNoteList}</ul>`)
+        //     })
+        // })
+
     });
 });
