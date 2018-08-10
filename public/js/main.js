@@ -26,8 +26,8 @@ function getSavedClasses() {
                 `<h4 class="text-center">${item.title}</h4> 
                 <p class="text-center">${item.description}</p>
 
-                <button data-id="${item._id}" class="show-notes btn btn-success" data-toggle="collapse" href="#collapse-${item._id}" aria-expanded="false" aria-controls="collapse-${item._id}">show notes</button>
-                <ul id="collapse-${item._id}" class="collapse">${newNoteList}</ul>
+                <button data-id="${item._id}" class="show-notes btn btn-success" data-toggle="collapse" href="#collapse-${item._id}" aria-expanded="true" aria-controls="collapse-${item._id}">hide/show notes</button>
+                <ul id="collapse-${item._id}" class="collapse show">${newNoteList}</ul>
 
 
                 <button data-id="${item._id}" class="add-notes btn btn-success" data-toggle="modal" data-target="#note-form-${item._id}">add note</button>
@@ -41,10 +41,14 @@ function getSavedClasses() {
                                 <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group modal-body">
                                 <input placeholder="title" class="title form-control" data-id="${item._id}" id="title${item._id}"></input>
                                 <textarea placeholder="body" id="note${item._id}" class="note form-control" data-id="${item._id}" rows="3"></textarea>
-                                <button class="add-btn btn btn-success" data-id="${item._id}"  data-dismiss="modal" aria-label="Close">submit</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary add-btn" data-id="${item._id}">Save changes</button>
+                                 
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
@@ -143,8 +147,11 @@ $(document).ready(function () {
 
     $(document).on("click", ".add-btn", function (event) {
         console.log("noting");
-        event.preventDefault();
-        // $(".modal").modal("hide")
+        $("body").removeClass("modal-open");
+        $(".modal-backdrop").removeClass("show");
+        $(".modal-backdrop").removeClass("fade");
+        $(".modal-backdrop").removeClass("modal-backdrop");
+        // event.preventDefault();
         // When you click the savenote button
         // Grab the id associated with the article from the submit button
         var thisId = $(this).attr("data-id");
