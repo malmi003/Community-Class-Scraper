@@ -17,7 +17,8 @@ let ClassSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Note"
         }
-    ]
+    ],
+    saved: false
 });
 
 // create model from above schema using Mongoose's model method

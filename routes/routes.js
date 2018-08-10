@@ -23,10 +23,10 @@ module.exports = function (app) {
                 //     .then(function (dbCategory) {
                 //         console.log(dbCategory)
                 //         if (dbCategory == []) {
-                            db.Category.create(result)
-                                .then(function (dbCategory) {
-                                    console.log(dbCategory);
-                                })
+                db.Category.create(result)
+                    .then(function (dbCategory) {
+                        console.log(dbCategory);
+                    })
                     //             .catch(function (err) {
                     //                 console.log(err);;
                     //             })
@@ -70,9 +70,9 @@ module.exports = function (app) {
                                 .then(function (dbClass) {
                                     return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id } }, { new: true })
                                 })
-                    //             .catch(function (err) {
-                    //                 console.log(err);
-                    //             });
+                            //             .catch(function (err) {
+                            //                 console.log(err);
+                            //             });
                         }
                     })
                     .catch(function (err) {
@@ -96,15 +96,15 @@ module.exports = function (app) {
             })
     });
     // Route for getting specific classes from the db
-    app.get("/classes/:id", function (req, res) {
-        db.Class.find({ _id: req.params.id })
-            .then(function (dbClass) {
-                res.json(dbClass);
-            })
-            .catch(function (err) {
-                res.json(err);
-            })
-    });
+    // app.get("/classes/:id", function (req, res) {
+    //     db.Class.find({ _id: req.params.id })
+    //         .then(function (dbClass) {
+    //             res.json(dbClass);
+    //         })
+    //         .catch(function (err) {
+    //             res.json(err);
+    //         })
+    // });
 
     // Route for grabbing a specific category by id, populate it with it's class
     app.get("/categorys/:id", function (req, res) {
@@ -122,7 +122,7 @@ module.exports = function (app) {
     app.get("/classes/:id", function (req, res) {
         id = req.params.id;
         db.Class.find({ _id: id })
-            .populate("Note")
+            .populate("notes")
             .then(function (dbClass) {
                 res.json(dbClass);
             })
@@ -131,12 +131,12 @@ module.exports = function (app) {
             });
     });
 
-    // Route for saving/updating an cat's associated class
+    // Route for saving/updating a cat's associated class
     app.post("categorys/:id", function (req, res) {
         categoryId = req.params.id;
         db.Class.create(req.body)
             .then(function (dbClass) {
-                return db.Class.findOneAndUpdate({ _id: categoryId }, { Class: dbClass._id }, { new: true })
+                return db.Class.findOneAndUpdate({ _id: categoryId }, { $push: { classes: dbClass._id } }, { new: true })
             })
             .then(function (dbCategory) {
                 res.json(dbCategory);
@@ -146,13 +146,13 @@ module.exports = function (app) {
             });
     });
 
-    // Route for saving/updating an class's associated Note
+    // Route for saving/updating a class's associated Note
     app.post("/classes/:id", function (req, res) {
         classId = req.params.id;
         console.log(req.body)
         db.Note.create(req.body)
             .then(function (dbNote) {
-                return db.Class.findOneAndUpdate({ _id: classId }, { notes: dbNote._id }, { new: true })
+                return db.Class.findOneAndUpdate({ _id: classId }, { $push: { notes: dbNote._id } }, { new: true })
             })
             .then(function (dbClass) {
                 res.json(dbClass);
@@ -162,7 +162,34 @@ module.exports = function (app) {
             });
     });
 
-    //   now I want to scrape all the urls that came back for all the class options but only show the subcategory that's active (clicked on)
-
-
+    app.post("/savedClasses/:id", function (req, res) {
+        classId = req.params.id;
+        db.Class.findOneAndUpdate({ _id: classId }, { saved: true }, { new: true })
+            .then(function (dbClass) {
+                res.json(dbClass);
+            })
+            .catch(function (err) {
+                res.json(err);
+            });
+    });
+    app.post("/unsavedClasses/:id", function (req, res) {
+        classId = req.params.id;
+        db.Class.findOneAndUpdate({ _id: classId }, { saved: false }, { new: true })
+            .then(function (dbClass) {
+                res.json(dbClass);
+            })
+            .catch(function (err) {
+                res.json(err);
+            });
+    });
+    // get all saved classes
+    app.get("/savedClasses/", function (req, res) {
+        db.Class.find({ saved: true })
+            .then(function (dbCategory) {
+                res.json(dbCategory);
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    });
 };

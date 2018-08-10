@@ -16,8 +16,14 @@ $(document).ready(function () {
         data.forEach(item => {
             item.classes.forEach((newItem, index) => {
                 $.get("/classes/" + newItem, function (data) {
-                    // console.log(newItem)
-                    $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}" id="title${newItem}"></input><input id="note${newItem}" class="note" data-id="${newItem}"></input></li>`)
+                    if (data[0].saved == true) {
+                        $("#cl-" + item._id).append(`<li>${data[0].title} <button class="unsave-btn" data-id="${newItem}">unsave</button></li>`)
+                    } else {
+                        $("#cl-" + item._id).append(`<li>${data[0].title} <button class="save-btn" data-id="${newItem}">save</button></li>`)
+                    }
+
+                    // below is good code for adding note!
+                    // $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}" id="title${newItem}"></input><input id="note${newItem}" class="note" data-id="${newItem}"></input></li>`)
                 })
             })
 
@@ -72,32 +78,88 @@ $(document).ready(function () {
     $(document).on("click", ".add-btn", function () {
         console.log("noting");
         // When you click the savenote button
-            // Grab the id associated with the article from the submit button
-            var thisId = $(this).attr("data-id");
+        // Grab the id associated with the article from the submit button
+        var thisId = $(this).attr("data-id");
 
-            // Run a POST request to change the note, using what's entered in the inputs
-            $.ajax({
-                method: "POST",
-                url: "/classes/" + thisId,
-                data: {
-                    // Value taken from title input
-                    title: $("#title" + thisId).val(),
-                    // Value taken from note textarea
-                    body: $("#note" + thisId).val(),
-                }
+        // Run a POST request to change the note, using what's entered in the inputs
+        $.ajax({
+            method: "POST",
+            url: "/classes/" + thisId,
+            data: {
+                // Value taken from title input
+                title: $("#title" + thisId).val(),
+                // Value taken from note textarea
+                body: $("#note" + thisId).val(),
+            }
+        })
+            // With that done
+            .then(function (data) {
+                // Log the response
+                console.log(data);
+                // Empty the notes section
+
+                // !!this not working
+                $("#title" + thisId).html("");
+                $("#note" + thisId).empty();
+            });
+
+        // Also, remove the values entered in the input and textarea for note entry
+        $("#title" + thisId).html("");
+        $("#note" + thisId).empty();
+    });
+
+    $(document).on("click", ".save-btn", function () {
+        // console.log("working")
+        let thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/savedClasses/" + thisId
+        }).then(function (data) {
+            console.log(data);
+            location.reload();
+            // $.getJSON("/savedClasses", function(data) {
+            //     console.log(data)
+            // })
+        })
+    });
+
+    $(document).on("click", ".unsave-btn", function () {
+        // console.log("working")
+        let thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/unsavedClasses/" + thisId
+        }).then(function (data) {
+            console.log(data);
+            location.reload();
+            // $.getJSON("/savedClasses", function(data) {
+            //     console.log(data)
+            // })
+        })
+    });
+
+    // show saved classes only
+    $(document).on("click", "#view-saved", function () {
+        // console.log("working")
+        $("#cat-class-list").addClass("d-none");
+        $("#saved-list").removeClass("d-none");
+        $.ajax({
+            method: "GET",
+            url: "/savedClasses/"
+        }).then(function (data) {
+            console.log(data)
+            $("#saved-list").html("<h3>Saved Classes</h3> <button id='view-main-page'>Back to class list<button>")
+            data.forEach(item => {
+                $("#saved-list").append(
+                    `<li>${item.title} <button class="add-btn" data-id="${item._id}">add note</button><input class="title" data-id="${item._id}" id="title${item._id}"></input><input id="note${item._id}" class="note" data-id="${item._id}"></input></li>`)
             })
-                // With that done
-                .then(function (data) {
-                    // Log the response
-                    console.log(data);
-                    // Empty the notes section
-                    $("#title" + thisId).empty();
-                    $("#note" + thisId).empty();
-                });
+            // $.getJSON("/savedClasses", function(data) {
+            //     console.log(data)
+            // })
+        })
+    });
 
-            // Also, remove the values entered in the input and textarea for note entry
-            $("#titleinput").val("");
-            $("#bodyinput").val("");
-        });
-
+    $(document).on("click", "#view-main-page", function () {
+        location.reload();
+    });
 });
