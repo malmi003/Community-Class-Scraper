@@ -10,6 +10,7 @@ let CategorySchema = new Schema({
     link: {
         type: String,
         required: true,
+        unique: true
     },
     classes: [
         {

@@ -18,27 +18,29 @@ module.exports = function (app) {
 
                 result.title = element.children[0].data;
                 result.link = element.attribs.href + "&PageSize=10";
-                db.Category.find({ title: result.title })
-                    .then(function (dbCategory) {
-                        // console.log(dbCategory)
-                        if (dbCategory == []) {
+                console.log(result.title)
+                // db.Category.find({ title: result.title })
+                //     .then(function (dbCategory) {
+                //         console.log(dbCategory)
+                //         if (dbCategory == []) {
                             db.Category.create(result)
                                 .then(function (dbCategory) {
                                     console.log(dbCategory);
                                 })
-                                .catch(function (err) {
-                                    res.json(err);
-                                });
-                        }
-                    })
+                    //             .catch(function (err) {
+                    //                 console.log(err);;
+                    //             })
+                    //     }
+                    // })
                     .catch(function (err) {
-                        return res.json(err);
-                    });
-
-            });
-
-            res.send("Scrape Complete")
-        });
+                        console.log(err);
+                    })
+            })
+            res.send("Category Scrape Complete");
+        })
+        // .then(function(data){
+        //     res.json(data);
+        // })
     });
 
 
@@ -49,6 +51,7 @@ module.exports = function (app) {
         axios.get(url).then(function (response) {
 
             let $ = cheerio.load(response.data);
+            // console.log(response.data)
 
             $(".description").each(function (i, element) {
 
@@ -67,17 +70,20 @@ module.exports = function (app) {
                                 .then(function (dbClass) {
                                     return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id } }, { new: true })
                                 })
-                                .catch(function (err) {
-                                    res.json(err);
-                                });
+                    //             .catch(function (err) {
+                    //                 console.log(err);
+                    //             });
                         }
                     })
                     .catch(function (err) {
-                        res.json(err);
+                        console.log(err);
                     });
-                    res.send("Class Scrape Complete")
-            });
-        });
+            })
+            res.send("Category Scrape Complete");
+        })
+        // .then(function(data){
+        //     res.json(data);
+        // })
     });
     // Route for getting all cats from the db
     app.get("/categorys", function (req, res) {
@@ -86,7 +92,7 @@ module.exports = function (app) {
                 res.json(dbCategory);
             })
             .catch(function (err) {
-                res.json(err);
+                console.log(err);
             })
     });
     // Route for getting all classes from the db

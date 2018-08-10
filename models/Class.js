@@ -6,17 +6,18 @@ let ClassSchema = new Schema({
     title: {
         type: String,
         required: true,
-        unique: true
     },
     link: {
         type: String,
         required: true,
         unique: true
     },
-    note: {
-        type: Schema.Types.ObjectId,
-        ref: "Note"
-    }
+    note: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Note"
+        }
+    ]
 });
 
 // create model from above schema using Mongoose's model method

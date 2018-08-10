@@ -17,7 +17,7 @@ $(document).ready(function () {
             item.classes.forEach((newItem, index) => {
                 $.get("/classes/" + newItem, function (data) {
                     // console.log(newItem)
-                    $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" id="${newItem}">add note</button><input></input><input></input></li>`)
+                    $("#cl-" + item._id).append(`<li>${data[0].title} <button class="add-btn" data-id="${newItem}">add note</button><input class="title" data-id="${newItem}"></input><input class="note" data-id="${newItem}"></input></li>`)
                 })
             })
 
@@ -25,7 +25,7 @@ $(document).ready(function () {
     })
 
     // onclick function to (redo) category scrape
-    $(document).on("click", "#initiate-scrape-btn",function () {
+    $(document).on("click", "#initiate-scrape-btn", function () {
         $.ajax({
             method: "GET",
             url: "/scrapeCategory"
@@ -43,14 +43,15 @@ $(document).ready(function () {
                     );
                 });
             })
-            .then(function () {
-                location.reload();
-            });
+                .then(function () {
+                    console.log("reload")
+                    location.reload();
+                });
         });
     });
 
     $(document).on("click", ".class-scrape", function () {
-        console.log("working")
+        // console.log("working")
         let data = {
             url: $(this).data("link"),
             id: $(this).data("dbid")
@@ -60,6 +61,7 @@ $(document).ready(function () {
                 console.log(data);
             })
             .then(function () {
+                console.log("reload")
                 location.reload();
             })
             .catch(function (err) {
@@ -68,7 +70,35 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".add-btn", function () {
-        console.log("working");
+        console.log("");
+        // When you click the savenote button
+        $(document).on("click", "#savenote", function () {
+            // Grab the id associated with the article from the submit button
+            var thisId = $(this).attr("id");
+
+            // Run a POST request to change the note, using what's entered in the inputs
+            $.ajax({
+                method: "POST",
+                url: "/classes/" + thisId,
+                data: {
+                    // Value taken from title input
+                    title: $("#titleinput").val(),
+                    // Value taken from note textarea
+                    body: $("#bodyinput").val()
+                }
+            })
+                // With that done
+                .then(function (data) {
+                    // Log the response
+                    console.log(data);
+                    // Empty the notes section
+                    $("#notes").empty();
+                });
+
+            // Also, remove the values entered in the input and textarea for note entry
+            $("#titleinput").val("");
+            $("#bodyinput").val("");
+        });
 
     });
 
