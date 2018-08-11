@@ -1,66 +1,6 @@
-// confirmed connected
-function getSavedClasses() {
-    $.ajax({
-        method: "GET",
-        url: "/savedClasses/"
-    }).then(function (data) {
-        console.log(data)
-        $("#saved-list").html("<h3 class='text-center'>Saved Classes</h3><hr>")
-        data.forEach(item => {
-            let noteList = [];
-            item.notes.forEach(newItem => {
-                noteList.push(`
-                <li class="card border-info mb-3" style="width: 18rem">
-                <h5 class="card-header text-white bg-info">${newItem.title}</h5>
-                <div class="card-body">
-                  
-                 <p class="card-text">${newItem.body}</p>
-                 <button class="delete-note btn btn-danger btn-block" data-id="${newItem._id}">delete note</button></li>
-               </div>
-               </li>`
-                )
-            })
-            let newNoteList = noteList.join("");
-
-            $("#saved-list").append(
-                `<h4 class="text-center">${item.title}</h4> 
-                <p class="text-center">${item.description}</p>
-
-                <button data-id="${item._id}" class="show-notes btn btn-success" data-toggle="collapse" href="#collapse-${item._id}" aria-expanded="true" aria-controls="collapse-${item._id}">hide/show notes</button>
-                <ul id="collapse-${item._id}" class="collapse show">${newNoteList}</ul>
-
-
-                <button data-id="${item._id}" class="add-notes btn btn-success" data-toggle="modal" data-target="#note-form-${item._id}">add note</button>
-
-                <form id="note-form-${item._id}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add a note to ${item.title}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="form-group modal-body">
-                                <input placeholder="title" class="title form-control" data-id="${item._id}" id="title${item._id}"></input>
-                                <textarea placeholder="body" id="note${item._id}" class="note form-control" data-id="${item._id}" rows="3"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary add-btn" data-id="${item._id}">Save changes</button>
-                                 
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                
-                <hr>`)
-        });
-    });
-};
-
-$(document).ready(function () {
+function renderPage() {
     // pull categories/class from DB to display right away
+    $("#category-list").empty();
     $.getJSON("/categorys", function (data) {
         data.forEach((item, index) => {
             // console.log(item)
@@ -101,6 +41,72 @@ $(document).ready(function () {
 
         })
     })
+}
+
+
+function getSavedClasses() {
+    $.ajax({
+        method: "GET",
+        url: "/savedClasses/"
+    }).then(function (data) {
+        console.log(data)
+        $("#saved-list").html("<h3 class='text-center'>Saved Classes</h3><hr>")
+        data.forEach(item => {
+            let noteList = [];
+            item.notes.forEach(newItem => {
+                noteList.push(`
+                <li class="card border-info mb-3" style="width: 18rem">
+                <h5 class="card-header text-white bg-info">${newItem.title}</h5>
+                <div class="card-body">
+                  
+                 <p class="card-text">${newItem.body}</p>
+                 <button class="delete-note btn btn-danger btn-block" data-id="${newItem._id}">delete note</button></li>
+               </div>
+               </li>`
+                )
+            })
+            let newNoteList = noteList.join("");
+
+            $("#saved-list").append(
+                `<h4 class="text-center">${item.title}</h4> 
+                <p class="text-center">${item.description}</p>
+
+                <button data-id="${item._id}" class="show-notes btn btn-success" data-toggle="collapse" href="#collapse-${item._id}" aria-expanded="true" aria-controls="collapse-${item._id}">hide/show notes</button>
+                <ul id="collapse-${item._id}" class="collapse show">${newNoteList}</ul>
+
+                <br>
+                <button data-id="${item._id}" class="add-notes btn btn-success" data-toggle="modal" data-target="#note-form-${item._id}">add note</button>
+
+                <form id="note-form-${item._id}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add a note to ${item.title}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="form-group modal-body">
+                                <input placeholder="title" class="title form-control" data-id="${item._id}" id="title${item._id}"></input>
+                                <textarea placeholder="body" id="note${item._id}" class="note form-control" data-id="${item._id}" rows="3"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary add-btn" data-id="${item._id}">add note</button>
+                                 
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <hr>`)
+        });
+    });
+};
+
+$(document).ready(function () {
+
+    renderPage();
 
     // onclick function to (redo) category scrape
     $(document).on("click", "#initiate-scrape-btn", function () {
@@ -121,7 +127,7 @@ $(document).ready(function () {
             })
                 .then(function () {
                     console.log("reload")
-                    location.reload();
+                    renderPage()
                 });
         });
     });
@@ -138,7 +144,7 @@ $(document).ready(function () {
             })
             .then(function () {
                 console.log("reload")
-                location.reload();
+                renderPage()
             })
             .catch(function (err) {
                 console.log(err);
@@ -186,7 +192,6 @@ $(document).ready(function () {
             url: "/savedClasses/" + thisId
         }).then(function (data) {
             console.log(data);
-            // location.reload();
         })
     });
 
