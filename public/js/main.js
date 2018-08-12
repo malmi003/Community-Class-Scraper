@@ -3,12 +3,11 @@ function renderPage() {
     $("#category-list").empty();
     $.getJSON("/categorys", function (data) {
         data.forEach((item, index) => {
-            // console.log(item)
+
             $("#category-list").append(`<li>
                 <a class="btn btn-info cat-btn" data-toggle="collapse" href="#cl-${item._id}" role="button" aria-expanded="false"><h4 id="cat-btn-${index}" data-link="${item.link}">${item.title}<span class="small"> click to expand</span></h4></a></li>
                 
                 <ul class="class-list collapse" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape btn btn-outline-warning btn-sm" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button><div id="ccl-${item._id}" class="card-columns"><div></ul>`)
-
         });
     }).then(function (data) {
         data.forEach(item => {
@@ -20,6 +19,9 @@ function renderPage() {
                             <h5 class="card-header text-white bg-info">${data[0].title}</h5>
                           <div class="card-body">
                            <p class="card-text">${data[0].description}</p>
+                           <p>
+                                <a href="${data[0].link}" target="_blank">Learn more</a>
+                            </p>
                            <button class="unsave-btn btn btn-danger btn-block" data-id="${newItem}">unsave</button>
                          </div>
                          </div>`
@@ -30,19 +32,19 @@ function renderPage() {
                                 <h5 class="card-header text-white bg-info">${data[0].title}</h5>
                           <div class="card-body">
                            <p class="card-text">${data[0].description}</p>
+                           <p>
+                                <a href="${data[0].link}" target="_blank">Learn more</a>
+                            </p>
                            <button class="save-btn btn btn-success btn-block" data-id="${newItem}">save</button>
                          </div>
                          </div>`
-                        )
-                    }
-                })
-
-            })
-
-        })
-    })
-}
-
+                        );
+                    };
+                });
+            });
+        });
+    });
+};
 
 function getSavedClasses() {
     $.ajax({
@@ -64,7 +66,7 @@ function getSavedClasses() {
                </div>
                </li>`
                 )
-            })
+            });
             let newNoteList = noteList.join("");
 
             $("#saved-list").append(
@@ -105,7 +107,7 @@ function getSavedClasses() {
 };
 
 $(document).ready(function () {
-
+    // display category list on page with any already scraped classes below
     renderPage();
 
     // onclick function to (redo) category scrape
@@ -114,26 +116,12 @@ $(document).ready(function () {
             method: "GET",
             url: "/scrapeCategory"
         }).then(function () {
-            $.getJSON("/categorys", function (data) {
-                data.forEach((item, index) => {
-                    // console.log(item)
-                    // $("#category-list").empty();
-                    $("#category-list").append(`<li>
-                                <h4 id="cat-btn-${index}"data-link="${item.link}">${item.title}</h4></li>
-
-                                <ul class="class-list" id="cl-${item._id}"><button id="class-btn-${index}" class="class-scrape" data-link="${item.link}" data-dbid="${item._id}">Scrape for the newest classes</button><div id="ccl-${item._id}" class="card-group"><div></ul>`
-                    );
-                });
-            })
-                .then(function () {
-                    console.log("reload")
-                    renderPage()
-                });
+            renderPage();
+            console.log("reload")
         });
     });
 
     $(document).on("click", ".class-scrape", function () {
-        // console.log("working")
         let data = {
             url: $(this).data("link"),
             id: $(this).data("dbid")
@@ -151,13 +139,13 @@ $(document).ready(function () {
             });
     });
 
-    $(document).on("click", ".add-btn", function (event) {
+    $(document).on("click", ".add-btn", function () {
         console.log("noting");
         $("body").removeClass("modal-open");
         $(".modal-backdrop").removeClass("show");
         $(".modal-backdrop").removeClass("fade");
         $(".modal-backdrop").removeClass("modal-backdrop");
-        // event.preventDefault();
+
         // When you click the savenote button
         // Grab the id associated with the article from the submit button
         var thisId = $(this).attr("data-id");
@@ -178,12 +166,10 @@ $(document).ready(function () {
                 // Empty the notes section
                 getSavedClasses();
             });
-        // Run a POST request to change the note, using what's entered in the inputs
     });
 
 
     $(document).on("click", ".save-btn", function () {
-        // console.log("working")
         let thisId = $(this).attr("data-id");
         $(this).attr("class", "unsave-btn btn btn-danger btn-block");
         $(this).html("unsave");
@@ -192,7 +178,7 @@ $(document).ready(function () {
             url: "/savedClasses/" + thisId
         }).then(function (data) {
             console.log(data);
-        })
+        });
     });
 
     $(document).on("click", ".unsave-btn", function () {
@@ -204,10 +190,7 @@ $(document).ready(function () {
             url: "/unsavedClasses/" + thisId
         }).then(function (data) {
             console.log(data);
-            // location.reload();
-
-
-        })
+        });
     });
 
     // show saved classes only
@@ -237,8 +220,6 @@ $(document).ready(function () {
             console.log(data);
 
             getSavedClasses();
-
-        })
+        });
     });
-
 });

@@ -2,7 +2,6 @@
 var axios = require("axios");
 var cheerio = require("cheerio");
 var db = require("../models");
-var mongoose = require("mongoose");
 
 module.exports = function (app) {
     // A GET route for scraping the community ed website categories
@@ -19,10 +18,7 @@ module.exports = function (app) {
                 result.title = element.children[0].data;
                 result.link = element.attribs.href + "&PageSize=10";
                 console.log(result.title)
-                // db.Category.find({ title: result.title })
-                //     .then(function (dbCategory) {
-                //         console.log(dbCategory)
-                //         if (dbCategory == []) {
+
                 db.Category.create(result)
                     .then(function (dbCategory) {
                         console.log(dbCategory);
@@ -32,7 +28,7 @@ module.exports = function (app) {
                     })
             })
             res.send("Category Scrape Complete");
-        })
+        });
     });
 
 
@@ -49,7 +45,7 @@ module.exports = function (app) {
 
                 let result = {};
                 console.log(element.children)
-                // console.log(element.children[3].children[1].children[0].data);
+
                 result.title = element.children[1].children[1].children[0].data;
                 result.link = element.children[1].children[1].attribs.href;
                 if (element.children[3].children[1].children[0] != undefined) {
@@ -68,16 +64,15 @@ module.exports = function (app) {
                             db.Class.create(result)
                                 .then(function (dbClass) {
                                     return db.Category.findOneAndUpdate({ _id: id }, { $push: { classes: dbClass._id } }, { new: true })
-                                })
-                        }
+                                });
+                        };
                     })
                     .catch(function (err) {
                         console.log(err);
                     });
-            })
+            });
             res.send("Category Scrape Complete");
-        })
-
+        });
     });
     // Route for getting all cats from the db
     app.get("/categorys", function (req, res) {
@@ -192,18 +187,6 @@ module.exports = function (app) {
         db.Note.remove({ _id: req.params.id })
             .then(function (dbNote) {
                 res.json(dbNote);
-            })
-            .catch(function (err) {
-                console.log(err);
-            })
-    });
-
-    // this DOES NOT WORK YET!!
-    app.post("/updateNote/:id/:body", function (req, res) {
-        db.Note.update({ _id: req.params.id }, { $set: { body: "wrc" } })
-            .then(function (dbNote) {
-                res.json(dbNote);
-                location.reload();
             })
             .catch(function (err) {
                 console.log(err);
